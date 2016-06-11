@@ -8,6 +8,7 @@ ECE 457A - Assignment 2, Question 1
 """
 import random
 from collections import deque
+from heapq import heappush, heappop
 
 def pretty_print(matrix):
     for i in range(len(matrix)):
@@ -51,14 +52,14 @@ def find_bfs_path(graph, start, end_one, end_two):
         current, path = queue.popleft()
         
         if current == end_one or current == end_two:
-            return path[1:]
+            return path[2:]
         
         if current in visited:
             continue
         visited.add(current)
 
         for direction, node in graph[current]:
-            queue.append((node, path + "-" + direction))
+            queue.append((node, path + "->" + direction))
             
     return "There is no way from start to end"
     
@@ -71,17 +72,56 @@ def find_dfs_path(graph, start, end_one, end_two):
         current, path = stack.pop()
         
         if current == end_one or current == end_two:
-            return path[1:]
+            return path[2:]
         
         if current in visited:
             continue
         visited.add(current)
 
         for direction, node in graph[current]:
-            stack.append((node, path + "-" + direction))
+            stack.append((node, path + "->" + direction))
             
     return "There is no way from start to end"
+
+# Find the Manhatten distance to the end closest to the current node    
+def calculate_heuristic(current, end_one, end_two):
+    cost_one = abs(current[1] - end_one[1]) + abs(current[0] - end_one[0])
+    cost_two = abs(current[1] - end_two[1]) + abs(current[0] - end_two[0])
+    
+    return min(cost_one, cost_two)
+    
         
+def find_a_star_path(graph, start, end_one, end_two):
+
+    """
+    Format of the elements in the heap:
+    (heuristic, cost of reaching there, node, path to reach there)
+    
+    heurisitc is used to sort the heap. heappush sorts based on the first item
+    in the tuple
+    """
+
+    heap = []    
+    heappush(heap, (calculate_heuristic(start, end_one, end_two), 0, start, ""))
+    
+    visited = set() # All visited nodes
+    
+    while heap:
+        heuristic, cost, current, path = heappop(heap)
+        
+        if current == end_one or current == end_two:
+            return path[2:]
+
+        if current in visited:
+            continue
+        visited.add(current)
+
+        for direction, node in graph[current]:
+            heappush(heap, (calculate_heuristic(current, end_one, end_two) + cost, \
+            cost + 1, node, path + "->" + direction))
+
+
+    return "There is no way from start to end"        
         
 num_of_rows = 25
 num_of_cols = 25
@@ -115,3 +155,6 @@ print(find_bfs_path(graph, start, end_one, end_two))
 
 print((start, end_one, end_two))
 print(find_dfs_path(graph, start, end_one, end_two))
+
+print((start, end_one, end_two))
+print(find_a_star_path(graph, start, end_one, end_two))
