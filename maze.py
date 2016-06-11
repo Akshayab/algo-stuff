@@ -19,9 +19,27 @@ def add_point(matrix, num):
         
         if matrix[random_row][random_col] == 0:
             matrix[random_row][random_col] = num
-            break
-    
+            return [random_row, random_col]
 
+# Convert matrix to a graph for further calculations
+def maze_to_graph(matrix):
+    # Create a graph (going outwards) with no neighbors
+    row_max = len(matrix)
+    col_max = len(matrix[0])
+    graph = {(i, j): [] for i in range(row_max) for j in range(col_max) if matrix[i][j] != 1}
+    
+    # Add the neighbors
+    for row, col in graph.keys():
+        if row < row_max - 1 and matrix[row + 1][col] != 1:
+            graph[(row, col)].append(("N", (row + 1, col)))
+            graph[(row + 1, col)].append(("S", (row, col)))
+            
+        if col < col_max - 1 and matrix[row][col + 1] != 1:
+            graph[(row, col)].append(("E", (row, col + 1)))
+            graph[(row, col + 1)].append(("W", (row, col)))
+            
+    return graph
+    
 
 num_of_rows = 25
 num_of_cols = 25
@@ -44,8 +62,8 @@ for i in range(num_of_rows):
             matrix[i][j] = 1
 
 
-add_point(matrix, 2)
-add_point(matrix, 3)
-add_point(matrix, 4)
+start = add_point(matrix, 2)
+end_one = add_point(matrix, 3)
+end_two = add_point(matrix, 4)
 
-pretty_print(matrix)
+print(maze_to_graph(matrix))
