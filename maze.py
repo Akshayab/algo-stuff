@@ -7,6 +7,7 @@ Created on Sat Jun 11 15:55:09 2016
 ECE 457A - Assignment 2, Question 1
 """
 import random
+from collections import deque
 
 def pretty_print(matrix):
     for i in range(len(matrix)):
@@ -19,9 +20,9 @@ def add_point(matrix, num):
         
         if matrix[random_row][random_col] == 0:
             matrix[random_row][random_col] = num
-            return [random_row, random_col]
+            return (random_row, random_col)
 
-# Convert matrix to a graph for further calculations
+# Convert matrix to a graph for traversal purposes
 def maze_to_graph(matrix):
     # Create a graph (going outwards) with no neighbors
     row_max = len(matrix)
@@ -40,7 +41,28 @@ def maze_to_graph(matrix):
             
     return graph
     
+    
+def find_bfs_path(graph, start, end_one, end_two):
+    # Make a queue which stores the node and the path to the node
+    queue = deque([(start, "")])
+    visited = set() # All visited nodes
+    
+    while queue:
+        current, path = queue.popleft()
+        
+        if current == end_one or current == end_two:
+            return path[1:]
+        
+        if current in visited:
+            continue
+        visited.add(current)
 
+        for direction, node in graph[current]:
+            queue.append((node, path + "-" + direction))
+            
+    return "There is no way from start to end"
+        
+        
 num_of_rows = 25
 num_of_cols = 25
 
@@ -66,4 +88,7 @@ start = add_point(matrix, 2)
 end_one = add_point(matrix, 3)
 end_two = add_point(matrix, 4)
 
-print(maze_to_graph(matrix))
+graph = maze_to_graph(matrix)
+
+print((start, end_one, end_two))
+print(find_bfs_path(graph, start, end_one, end_two))
