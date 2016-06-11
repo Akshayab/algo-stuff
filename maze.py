@@ -61,6 +61,26 @@ def find_bfs_path(graph, start, end_one, end_two):
             queue.append((node, path + "-" + direction))
             
     return "There is no way from start to end"
+    
+def find_dfs_path(graph, start, end_one, end_two):
+    # Make a stack which stores the node and the path to the node
+    stack = deque([(start, "")])
+    visited = set() # All visited nodes
+    
+    while stack:
+        current, path = stack.pop()
+        
+        if current == end_one or current == end_two:
+            return path[1:]
+        
+        if current in visited:
+            continue
+        visited.add(current)
+
+        for direction, node in graph[current]:
+            stack.append((node, path + "-" + direction))
+            
+    return "There is no way from start to end"
         
         
 num_of_rows = 25
@@ -92,3 +112,6 @@ graph = maze_to_graph(matrix)
 
 print((start, end_one, end_two))
 print(find_bfs_path(graph, start, end_one, end_two))
+
+print((start, end_one, end_two))
+print(find_dfs_path(graph, start, end_one, end_two))
