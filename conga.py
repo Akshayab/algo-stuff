@@ -22,20 +22,37 @@ def is_legal_move(board, new_position):
     
 # Move pieces from one square to another
 def make_move(board, from_pos, to_pos, number, stones, color):
+    print("Tring to make a move " + str(number) + " pieces from " + str(from_pos) + \
+        " to " + str(to_pos))
+    
+    original_num = board[from_pos[0]][from_pos[1]][1]
+    
     if number > 0:
-        board[to_pos[0]][to_pos[1]][0] = color
-        board[to_pos[0]][to_pos[1]][1] += number
+        if original_num < number:
+            number = original_num
+            
+        if board[to_pos[0]][to_pos[1]][0] == color:
+            board[to_pos[0]][to_pos[1]][1] += number
+        else:
+            board[to_pos[0]][to_pos[1]][0] = color
+            board[to_pos[0]][to_pos[1]][1] = number
+
         stones.add(to_pos)
         
         board[from_pos[0]][from_pos[1]][1] -= number
         
         # If no stones left in the initial position
-        if board[from_pos[0]][from_pos[1]][1] == 0:
+        if board[from_pos[0]][from_pos[1]][1] <= 0:
             board[from_pos[0]][from_pos[1]][0] = None
-            stones.remove(from_pos)
+            board[from_pos[0]][from_pos[1]][1] = 0
+            if from_pos in stones:
+                stones.remove(from_pos)
             
         print(color + " moves " + str(number) + " pieces from " + str(from_pos) + \
         " to " + str(to_pos))
+        
+        return number > 0
+    return False
         
 def random_legal_move(board, color, player_stones, opponent_stones):    
     print(color + "'s turn")
@@ -53,20 +70,20 @@ def random_legal_move(board, color, player_stones, opponent_stones):
                     second_pos = (new_pos[0] + move[0], new_pos[1] + move[1])
                     
                     if second_pos in opponent_stones or not(is_legal_move(board, second_pos)):                        
-                        make_move(board, (row, col), new_pos, num, player_stones, color)
-                        return True
+                        if make_move(board, (row, col), new_pos, num, player_stones, color):
+                            return True
                     else:
                         third_pos = (second_pos[0] + move[0], second_pos[1] + move[1])
                         
                         if third_pos in opponent_stones or not(is_legal_move(board, third_pos)):
-                            make_move(board, (row, col), new_pos, 1, player_stones, color)
-                            make_move(board, (row, col), second_pos, num - 1, player_stones, color)
-                            return True
+                            if make_move(board, (row, col), new_pos, 1, player_stones, color) or \
+                            make_move(board, (row, col), second_pos, num - 1, player_stones, color):
+                                return True
                         else:
-                            make_move(board, (row, col), new_pos, 1, player_stones, color)
-                            make_move(board, (row, col), second_pos, 2, player_stones, color)
-                            make_move(board, (row, col), third_pos, num - 3, player_stones, color)
-                            return True
+                            if make_move(board, (row, col), new_pos, 1, player_stones, color) or \
+                            make_move(board, (row, col), second_pos, 2, player_stones, color) or \
+                            make_move(board, (row, col), third_pos, num - 3, player_stones, color):
+                                return True
 
 
     print("No move possible, " + color + " lost")
@@ -105,6 +122,7 @@ while (random_legal_move(board, colors[index], positions[index], positions[other
     index += 1
     index = index % 2
     other_index = 2 - index - 1
+
     print("")
 
     
