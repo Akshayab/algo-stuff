@@ -19,7 +19,18 @@ def pretty_print(matrix):
 def is_legal_move(board, new_position):
     return new_position[0] >= 0 and new_position[0] < len(board) and \
     new_position[1] >= 0 and new_position[1] < len(board[0])
-    
+
+"""
+Calculate the goodness of a move
+moves of the format [[to_pos, num of stones], ...]
+"""
+def evaluation_function(board, from_pos, moves, stones, color):
+    child_board = board[:]
+
+    for i in range(len(moves)):
+        make_move(child_board, from_pos, moves[i][0], moves[i][1], stones, color)
+        
+        
 # Move pieces from one square to another
 def make_move(board, from_pos, to_pos, number, stones, color):
     print("Tring to make a move " + str(number) + " pieces from " + str(from_pos) + \
@@ -93,6 +104,16 @@ def random_legal_move(board, color, player_stones, opponent_stones):
     print("No move possible, " + color + " lost")
     return False
 
+"""
+Use MinMax strategy to calculate the best possible move
+Use a depth limit of 2
+"""
+def smart_legal_move(board, color, player_stones, opponent_stones):
+    print(color +"'s turn")
+    
+    for row, col in player_stones:
+        for move in possible_moves:
+            #Do something
 
 num_of_rows = 4
 num_of_cols = 4
