@@ -28,9 +28,11 @@ def make_move(board, from_pos, to_pos, number, stones, color):
     original_num = board[from_pos[0]][from_pos[1]][1]
     
     if number > 0:
+        # Only move the stones there in the grid, not more
         if original_num < number:
             number = original_num
-            
+         
+        # Update grid where the stones will be moved to
         if board[to_pos[0]][to_pos[1]][0] == color:
             board[to_pos[0]][to_pos[1]][1] += number
         else:
@@ -39,6 +41,7 @@ def make_move(board, from_pos, to_pos, number, stones, color):
 
         stones.add(to_pos)
         
+        # Update grid where the stones will be moved from
         board[from_pos[0]][from_pos[1]][1] -= number
         
         # If no stones left in the initial position
@@ -51,6 +54,7 @@ def make_move(board, from_pos, to_pos, number, stones, color):
         print(color + " moves " + str(number) + " pieces from " + str(from_pos) + \
         " to " + str(to_pos))
         
+        # Did any stones move?
         return number > 0
     return False
         
