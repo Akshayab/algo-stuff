@@ -66,18 +66,24 @@ def decrement_tabu(matrix):
 
 def tabu_search(instance, flow_arr, distance_arr, tabu_matrix):
     current = instance
+    best_cost = calculate_cost(current, flow_arr, distance_arr)
     iterations = 0
-    tabu_size = random.randint(0, 10)
+    tabu_size = random.randint(4, 14)
+    
     while calculate_cost(current, flow_arr, distance_arr) > 2570 and iterations < 500:
         current = get_most_optimal_neighbor(current, flow_arr, distance_arr, tabu_matrix, tabu_size)
         tabu_matrix = decrement_tabu(tabu_matrix)
         iterations += 1
         if iterations % 50 == 0:
-            tabu_size = random.randint(0, 10)
+            tabu_size = random.randint(4, 14)
+        
+        if calculate_cost(current, flow_arr, distance_arr) < best_cost:
+            best_cost = calculate_cost(current, flow_arr, distance_arr)
         
     return {'cost': calculate_cost(current, flow_arr, distance_arr),
             'iterations': iterations,
-            'instance': current}
+            'instance': current,
+            'best': best_cost}
     
 # Initial flow and distance arrays setup
 flow_file = open('flow.csv', 'r')
