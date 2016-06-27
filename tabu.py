@@ -35,7 +35,7 @@ def calculate_cost(instance, flow_arr, distance_arr):
     return cost
     
     
-def get_most_optimal_neighbor(instance, flow_arr, distance_arr, tabu_matrix):
+def get_most_optimal_neighbor(instance, flow_arr, distance_arr, tabu_matrix, tabu_size):
     best_cost = float("inf")
     best_instance = None
     
@@ -51,7 +51,8 @@ def get_most_optimal_neighbor(instance, flow_arr, distance_arr, tabu_matrix):
                 and tabu_matrix[new_instance[j]][j] == 0:
                     best_cost = new_cost
                     best_instance = new_instance
-                    tabu_matrix[new_instance[j]][j] = 5
+                    tabu_matrix[new_instance[j]][j] = tabu_size
+                    tabu_matrix[new_instance[i]][i] = tabu_size
     
     print best_cost
     return best_instance
@@ -66,10 +67,13 @@ def decrement_tabu(matrix):
 def tabu_search(instance, flow_arr, distance_arr, tabu_matrix):
     current = instance
     iterations = 0
+    tabu_size = random.randint(0, 10)
     while calculate_cost(current, flow_arr, distance_arr) > 2570 and iterations < 500:
-        current = get_most_optimal_neighbor(current, flow_arr, distance_arr, tabu_matrix)
+        current = get_most_optimal_neighbor(current, flow_arr, distance_arr, tabu_matrix, tabu_size)
         tabu_matrix = decrement_tabu(tabu_matrix)
         iterations += 1
+        if iterations % 50 == 0:
+            tabu_size = random.randint(0, 10)
         
     return {'cost': calculate_cost(current, flow_arr, distance_arr),
             'iterations': iterations,
