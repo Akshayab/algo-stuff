@@ -26,8 +26,11 @@ def calculate_cost(instance, flow_arr, distance_arr):
             permut_flow_permut[j][instance[i]] = flow_col[j]
     
     for i in range(len(distance_arr)):
+        row_cost = 0
         for j in range(len(distance_arr[0])):
-            cost += permut_flow_permut[i][j] + distance_arr[i][j]
+            row_cost += permut_flow_permut[i][j] * distance_arr[i][j]
+        
+        cost += row_cost
             
     return cost
     
@@ -46,6 +49,7 @@ def get_most_optimal_neighbor(instance, flow_arr, distance_arr):
                     best_cost = new_cost
                     best_instance = new_instance
     
+    print best_cost
     return best_instance
             
 # Initial flow and distance arrays setup
