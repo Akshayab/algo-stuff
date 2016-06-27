@@ -6,7 +6,7 @@ Created on Mon Jun 27 10:59:15 2016
 """
 import csv
 import random
-import math
+
 def get_column(index, matrix):
     return [row[index] for row in matrix]
 
@@ -35,7 +35,7 @@ def calculate_cost(instance, flow_arr, distance_arr):
     return cost
     
     
-def get_most_optimal_neighbor(instance, flow_arr, distance_arr):
+def get_most_optimal_neighbor(instance, flow_arr, distance_arr, tabu_matrix):
     best_cost = float("inf")
     best_instance = None
     
@@ -45,13 +45,36 @@ def get_most_optimal_neighbor(instance, flow_arr, distance_arr):
                 new_instance = instance[:]
                 new_instance[i], new_instance[j] = new_instance[j], new_instance[i]
                 new_cost = calculate_cost(new_instance, flow_arr, distance_arr)
-                if new_cost < best_cost:
+                
+                # Check if better than best so far and if not tabued
+                if new_cost < best_cost and tabu_matrix[new_instance[i]][i] == 0 \
+                and tabu_matrix[new_instance[j]][j] == 0:
                     best_cost = new_cost
                     best_instance = new_instance
+                    tabu_matrix[new_instance[j]][j] = 5
     
     print best_cost
     return best_instance
-            
+    
+def decrement_tabu(matrix):
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            if matrix[i][j] > 0:
+                matrix[i][j] -= 1
+    return matrix
+
+def tabu_search(instance, flow_arr, distance_arr, tabu_matrix):
+    current = instance
+    iterations = 0
+    while calculate_cost(current, flow_arr, distance_arr) > 2570 and iterations < 500:
+        current = get_most_optimal_neighbor(current, flow_arr, distance_arr, tabu_matrix)
+        tabu_matrix = decrement_tabu(tabu_matrix)
+        iterations += 1
+        
+    return {'cost': calculate_cost(current, flow_arr, distance_arr),
+            'iterations': iterations,
+            'instance': current}
+    
 # Initial flow and distance arrays setup
 flow_file = open('flow.csv', 'r')
 distance_file = open('distance.csv', 'r')
@@ -80,5 +103,4 @@ init_soln = [i for i in range(20)]
 random.shuffle(init_soln)
 
 print(init_soln)
-print(calculate_cost(init_soln, flow_arr, distance_arr))
-print(get_most_optimal_neighbor(init_soln, flow_arr, distance_arr))
+print(tabu_search(init_soln, flow_arr, distance_arr, tabu_matrix))
