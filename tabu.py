@@ -3,9 +3,11 @@
 Created on Mon Jun 27 10:59:15 2016
 
 @author: akshaybudhkar
+Best so far: {'instance': [16, 7, 10, 4, 12, 3, 19, 6, 0, 5, 18, 14, 11, 9, 15, 17, 1, 13, 2, 8], 'cost': 2586, 'iterations': 1000}
 """
 import csv
 import random
+import matplotlib.pyplot as plt
 
 def get_column(index, matrix):
     return [row[index] for row in matrix]
@@ -35,7 +37,7 @@ def calculate_cost(instance, flow_arr, distance_arr):
     return cost
     
     
-def get_most_optimal_neighbor(instance, flow_arr, distance_arr, tabu_matrix, tabu_size):
+def get_most_optimal_neighbor(instance, flow_arr, distance_arr, tabu_matrix, tabu_size, best = []):
     best_cost = float("inf")
     best_instance = None
     
@@ -47,12 +49,13 @@ def get_most_optimal_neighbor(instance, flow_arr, distance_arr, tabu_matrix, tab
                 new_cost = calculate_cost(new_instance, flow_arr, distance_arr)
                 
                 # Check if better than best so far and if not tabued
-                if new_cost < best_cost and tabu_matrix[new_instance[i]][i] == 0 \
-                and tabu_matrix[new_instance[j]][j] == 0:
-                    best_cost = new_cost
-                    best_instance = new_instance
-                    tabu_matrix[new_instance[j]][j] = tabu_size
-                    tabu_matrix[new_instance[i]][i] = tabu_size
+                if new_cost < best_cost:
+                    if (tabu_matrix[new_instance[i]][i] == 0 and tabu_matrix[new_instance[j]][j] == 0)\
+                    or (new_instance == best and tabu_matrix[new_instance[i]][i] < 4 and tabu_matrix[new_instance[j]][j] < 4):
+                        best_cost = new_cost
+                        best_instance = new_instance
+                        tabu_matrix[new_instance[j]][j] = tabu_size
+                        tabu_matrix[new_instance[i]][i] = tabu_size
     
     print best_cost
     return best_instance
@@ -66,24 +69,42 @@ def decrement_tabu(matrix):
 
 def tabu_search(instance, flow_arr, distance_arr, tabu_matrix):
     current = instance
-    best_cost = calculate_cost(current, flow_arr, distance_arr)
+    current_cost = calculate_cost(current, flow_arr, distance_arr)
+    best_cost = current_cost
     iterations = 0
-    tabu_size = random.randint(4, 14)
+    tabu_size = 15
+    best = instance
+    costs = []
     
-    while calculate_cost(current, flow_arr, distance_arr) > 2570 and iterations < 500:
-        current = get_most_optimal_neighbor(current, flow_arr, distance_arr, tabu_matrix, tabu_size)
+    while current_cost > 2570 and iterations < 1000:
+        current = get_most_optimal_neighbor(current, flow_arr, distance_arr, tabu_matrix, tabu_size, best)
+        current_cost = calculate_cost(current, flow_arr, distance_arr)
+        
         tabu_matrix = decrement_tabu(tabu_matrix)
-        iterations += 1
+
         if iterations % 50 == 0:
-            tabu_size = random.randint(4, 14)
+            tabu_size = random.randint(1, 20)        
         
-        if calculate_cost(current, flow_arr, distance_arr) < best_cost:
-            best_cost = calculate_cost(current, flow_arr, distance_arr)
+        if current_cost < best_cost:
+            # Diversification
+            if iterations > 250 or current_cost < 2600:
+                best_cost = current_cost
+                best = current
+            else:
+                best = []
+
+        iterations += 1        
+        costs.append(current_cost)
         
-    return {'cost': calculate_cost(current, flow_arr, distance_arr),
+    plt.plot(costs)
+    plt.ylim([2000, 3500])
+    plt.plot((0, 1000), (2570, 2570))
+    plt.show()
+    
+    # Return the best ever
+    return {'cost': best_cost,
             'iterations': iterations,
-            'instance': current,
-            'best': best_cost}
+            'instance': best}
     
 # Initial flow and distance arrays setup
 flow_file = open('flow.csv', 'r')
