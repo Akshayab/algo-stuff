@@ -23,7 +23,7 @@ def calculate_cost(instance, flow_arr, distance_arr):
         flow_col = get_column(instance[i], permutation_flow)
         
         for j in range(len(permut_flow_permut)):
-            permut_flow_permut[j][instance[i]] = flow_col[j]
+            permut_flow_permut[j][i] = flow_col[j]
     
     for i in range(len(distance_arr)):
         row_cost = 0
