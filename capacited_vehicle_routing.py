@@ -3,13 +3,46 @@
 Created on Tue Jun 28 14:30:18 2016
 
 @author: akshaybudhkar
+Solution to Question 5 of Assignment 2
 """
 import math
+import random
+from itertools import islice
 
 def calculate_euclidean_distance(A, B):
     x_diff = A[0] - B[0]
     y_diff = A[1] - B[1]
     return int(round(math.sqrt(x_diff*x_diff + y_diff*y_diff)))
+    
+
+def get_random_solution(lst, min_split, no_of_splits):
+    random.shuffle(lst)
+    size = len(lst)
+    itr = iter(lst)
+    
+    for i in range(no_of_splits - 1, 0, -1):
+        s = random.randint(min_split, size - i*min_split)
+        yield list(islice(itr,0,s))
+        size -= s
+    yield list(itr)
+    
+
+def calculate_cost(solution, coordinates):
+    cost = 0
+    for i in range(len(solution)):
+        for j in range(len(solution[i])):
+            current = solution[i][j]
+            
+            #Cost from depot
+            if j == 0 or j == (len(solution[i]) - 1):
+                cost += calculate_euclidean_distance(coordinates[0], coordinates[current])
+            
+            #Cost between cities
+            if j != (len(solution[i]) - 1):
+                nxt = solution[i][j+1]
+                cost += calculate_euclidean_distance(coordinates[nxt], coordinates[current])
+
+    return cost
 
 
 file = open('A-n32-k5.vrp', 'r')
@@ -55,11 +88,9 @@ for line in file:
         reading_demand = True
         
 depot = coordinates[0]
+cities = [i + 1 for i in range(len(coordinates) - 1)] # Do not include the depot
 
-print(min_vehicles)
-print(dimension)
-print(capacity)
-print(coordinates)
-print(demands)
-print(depot)
-print(calculate_euclidean_distance(depot, coordinates[1]))
+init_soln = list(get_random_solution(cities, 1, min_vehicles))
+
+print(init_soln)
+print(calculate_cost(init_soln, coordinates))
