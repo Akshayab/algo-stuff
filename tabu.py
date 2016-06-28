@@ -9,24 +9,29 @@ import csv
 import random
 import matplotlib.pyplot as plt
 
+# Returns a column of a matrix as a list 
 def get_column(index, matrix):
     return [row[index] for row in matrix]
 
+# Uses the standard way to calculate cost in a QAP problem
 def calculate_cost(instance, flow_arr, distance_arr):
     permutation_flow = [[0 for i in range(20)] for j in range(20)]
     cost = 0
-        
+    
+    #PF        
     for i in range(len(instance)):
         permutation_flow[i] = flow_arr[instance[i]]
     
     permut_flow_permut = [[0 for i in range(20)] for j in range(20)]
     
+    #PFP
     for i in range(len(instance)):
         flow_col = get_column(instance[i], permutation_flow)
         
         for j in range(len(permut_flow_permut)):
             permut_flow_permut[j][i] = flow_col[j]
     
+    #PFP * D
     for i in range(len(distance_arr)):
         row_cost = 0
         for j in range(len(distance_arr[0])):
@@ -36,19 +41,24 @@ def calculate_cost(instance, flow_arr, distance_arr):
             
     return cost
     
-    
+""" 
+Gives the most optimal neighbor in a neighborhood
+Takes into account tabued options and aspirations
+"""
 def get_most_optimal_neighbor(instance, flow_arr, distance_arr, tabu_matrix, tabu_size, best = []):
     best_cost = float("inf")
     best_instance = None
     
+    # Check for every possible switch
     for i in range(len(instance)):
         for j in range(len(instance)):
+            # Don't switch with itself
             if i != j:
                 new_instance = instance[:]
                 new_instance[i], new_instance[j] = new_instance[j], new_instance[i]
                 new_cost = calculate_cost(new_instance, flow_arr, distance_arr)
                 
-                # Check if better than best so far and if not tabued
+                # Check if better than best so far and if not tabued (taking into account aspiration)
                 if new_cost < best_cost:
                     if (tabu_matrix[new_instance[i]][i] == 0 and tabu_matrix[new_instance[j]][j] == 0)\
                     or (new_instance == best and tabu_matrix[new_instance[i]][i] < 4 and tabu_matrix[new_instance[j]][j] < 4):
@@ -59,7 +69,8 @@ def get_most_optimal_neighbor(instance, flow_arr, distance_arr, tabu_matrix, tab
     
     print best_cost
     return best_instance
-    
+
+# Decrement elements tabued in a matrix    
 def decrement_tabu(matrix):
     for i in range(len(matrix)):
         for j in range(len(matrix)):
@@ -67,6 +78,7 @@ def decrement_tabu(matrix):
                 matrix[i][j] -= 1
     return matrix
 
+# Implements standard Tabu search to get the most optimal solution
 def tabu_search(instance, flow_arr, distance_arr, tabu_matrix):
     current = instance
     current_cost = calculate_cost(current, flow_arr, distance_arr)
@@ -74,14 +86,16 @@ def tabu_search(instance, flow_arr, distance_arr, tabu_matrix):
     iterations = 0
     tabu_size = 15
     best = instance
-    costs = []
+    costs = [] # For plottinh purposes
     
+    # Waiting condition = if we reach optimal or we ~1k iterations
     while current_cost > 2570 and iterations < 1000:
         current = get_most_optimal_neighbor(current, flow_arr, distance_arr, tabu_matrix, tabu_size, best)
         current_cost = calculate_cost(current, flow_arr, distance_arr)
         
         tabu_matrix = decrement_tabu(tabu_matrix)
 
+        # Dynamic tabu tenure
         if iterations % 50 == 0:
             tabu_size = random.randint(1, 20)        
         
@@ -98,7 +112,7 @@ def tabu_search(instance, flow_arr, distance_arr, tabu_matrix):
         
     plt.plot(costs)
     plt.ylim([2000, 3500])
-    plt.plot((0, 1000), (2570, 2570))
+    plt.plot((0, 1000), (2570, 2570)) #Ideal
     plt.show()
     
     # Return the best ever
