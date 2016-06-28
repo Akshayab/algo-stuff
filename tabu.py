@@ -147,5 +147,5 @@ init_soln = [i for i in range(20)]
 # Shuffle for random initial solution
 random.shuffle(init_soln)
 
-print(init_soln)
 print(tabu_search(init_soln, flow_arr, distance_arr, tabu_matrix))
+print(init_soln)
