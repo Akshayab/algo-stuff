@@ -3,7 +3,7 @@
 Created on Mon Jun 27 10:59:15 2016
 
 @author: akshaybudhkar
-Best so far: {'instance': [16, 7, 10, 4, 12, 3, 19, 6, 0, 5, 18, 14, 11, 9, 15, 17, 1, 13, 2, 8], 'cost': 2586, 'iterations': 1000}
+Best so far: {'instance': [8, 2, 13, 9, 17, 15, 10, 11, 1, 3, 12, 7, 19, 14, 18, 5, 0, 6, 4, 16], 'cost': 2578, 'iterations': 1000}
 """
 import csv
 import random
