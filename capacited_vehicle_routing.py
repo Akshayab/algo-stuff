@@ -25,7 +25,24 @@ def get_random_solution(lst, min_split, no_of_splits):
         yield list(islice(itr,0,s))
         size -= s
     yield list(itr)
+
+def get_valid_random_solution(lst, min_split, no_of_splits, demands):
+    valid = False
     
+    while not valid:
+        valid = True
+        soln = list(get_random_solution(lst, min_split, no_of_splits))
+        
+        for i in range(len(soln)):
+            total_demands = 0
+            for j in range(len(soln[i])):
+                total_demands += demands[soln[i][j]]
+            
+            if total_demands > 100:
+                valid = False
+                break
+
+    return soln                
 
 def calculate_cost(solution, coordinates):
     cost = 0
@@ -90,7 +107,7 @@ for line in file:
 depot = coordinates[0]
 cities = [i + 1 for i in range(len(coordinates) - 1)] # Do not include the depot
 
-init_soln = list(get_random_solution(cities, 1, min_vehicles))
+init_soln = list(get_valid_random_solution(cities, 1, min_vehicles, demands))
 
 print(init_soln)
 print(calculate_cost(init_soln, coordinates))
