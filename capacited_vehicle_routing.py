@@ -60,6 +60,47 @@ def calculate_cost(solution, coordinates):
                 cost += calculate_euclidean_distance(coordinates[nxt], coordinates[current])
 
     return cost
+    
+def simulated_annealing(init, coordinates, demands, cities, min_vehicles):
+    current = init
+    current_cost = calculate_cost(init, coordinates)
+    best = init
+    best_cost = current_cost
+    
+    current_temp = 100
+    final_temp = 1
+    alpha = 0.99
+    max_iterations = 100
+    
+    while current_temp > final_temp:
+        iterations = 0
+        
+        while iterations < max_iterations:
+            nbr = get_valid_random_solution(cities, 1, min_vehicles, demands)
+            nbr_cost = calculate_cost(nbr, coordinates)
+            change = nbr_cost - current_cost
+            
+            # If it is better, we make that change my default
+            if change < 0:
+                current = nbr
+                current_cost = nbr_cost
+            else:
+                x = random.random()
+                if x < math.exp(-1*change/current_temp):
+                    current = nbr
+                    current_cost = nbr_cost
+                    
+            iterations += 1
+        
+        final_temp = final_temp*alpha
+        
+        if current_cost < best_cost:
+            best = current
+            best_cost = current_cost
+            
+        print(current_cost)
+    
+    return (current, best, best_cost)
 
 
 file = open('A-n32-k5.vrp', 'r')
@@ -110,4 +151,4 @@ cities = [i + 1 for i in range(len(coordinates) - 1)] # Do not include the depot
 init_soln = list(get_valid_random_solution(cities, 1, min_vehicles, demands))
 
 print(init_soln)
-print(calculate_cost(init_soln, coordinates))
+print(simulated_annealing(init_soln, coordinates, demands, cities, min_vehicles))
