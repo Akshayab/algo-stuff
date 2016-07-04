@@ -101,7 +101,7 @@ def simulated_annealing(solution, depot, distance):
             
             iterations += 1
         
-        final_temp = final_temp*alpha
+        current_temp = current_temp*alpha
         
         if current_cost < best_cost:
             flop_iterations = 0

@@ -42,7 +42,57 @@ def get_valid_random_solution(lst, min_split, no_of_splits, demands):
                 valid = False
                 break
 
-    return soln                
+    return soln
+    
+def check_validity(soln, demands):
+    for i in range(len(soln)):
+        total_demands = 0
+        for j in range(len(soln[i])):
+            total_demands += demands[soln[i][j]]
+        
+        if total_demands > 100:
+            return False
+
+    return True
+    
+    
+def get_valid_neighbor(init, min_vehicles, demands):
+    valid = False
+    final = []
+    iterations = 0
+    
+    while not valid and iterations < 100:
+        current = init
+        move_from = random.randint(0, len(current) - 1)
+        
+        # Ensure that we have atleast one city left
+        if current[move_from] == 1 and len(current) == min_vehicles:
+            while len(current[move_from]) <= 1:
+                move_from = random.randint(0, len(current) - 1)
+            
+        move_to = random.randint(0, len(current) - 1)
+        
+        # Ensure we move to a new route
+        while move_from == move_to:
+            move_to = random.randint(0, len(current) - 1)
+            
+        city_to_move = current[move_from][random.randint(0, len(current[move_from]) - 1)]
+        current[move_from].remove(city_to_move)
+                    
+        current[move_to].append(city_to_move)
+
+        if len(current[move_from]) == 0:
+            current.remove([])
+        
+        if check_validity(current, demands):
+            valid = True
+            final = current
+        else:
+            iterations += 1
+            final = init
+    
+    return final
+    
 
 def calculate_cost(solution, coordinates):
     cost = 0
@@ -61,22 +111,23 @@ def calculate_cost(solution, coordinates):
 
     return cost
     
+    
 def simulated_annealing(init, coordinates, demands, cities, min_vehicles):
     current = init
     current_cost = calculate_cost(init, coordinates)
     best = init
     best_cost = current_cost
     
-    current_temp = 100
+    current_temp = 1000
     final_temp = 1
-    alpha = 0.99
+    alpha = 0.85
     max_iterations = 100
     
     while current_temp > final_temp:
         iterations = 0
         
         while iterations < max_iterations:
-            nbr = get_valid_random_solution(cities, 1, min_vehicles, demands)
+            nbr = get_valid_neighbor(current, min_vehicles, demands)
             nbr_cost = calculate_cost(nbr, coordinates)
             change = nbr_cost - current_cost
             
@@ -92,7 +143,7 @@ def simulated_annealing(init, coordinates, demands, cities, min_vehicles):
                     
             iterations += 1
         
-        final_temp = final_temp*alpha
+        current_temp = current_temp*alpha
         
         if current_cost < best_cost:
             best = current
