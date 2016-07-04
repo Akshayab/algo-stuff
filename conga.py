@@ -113,14 +113,42 @@ def random_legal_move(board, color, player_stones, opponent_stones):
     print("No move possible, " + color + " lost")
     return False
 
+def get_child_with_best_evaluation(board, color, player_stones, opponent_stones):
+    best_evaluation = float("inf")
+    
+    for row, col in player_stones:
+        for move in possible_moves:
+            new_pos = (row + move[0], col + move[1])
+
+            if is_legal_move(board, new_pos) and new_pos not in opponent_stones:
+                potential_stones = set(player_stones)
+                potential_stones.add(new_pos)
+                
+                second_pos = (new_pos[0] + move[0], new_pos[1] + move[1])
+                if second_pos not in opponent_stones and is_legal_move(board, second_pos):
+                    potential_stones.add(second_pos)
+                             
+                    third_pos = (second_pos[0] + move[0], second_pos[1] + move[1])
+                    
+                    if third_pos not in opponent_stones and is_legal_move(board, third_pos):
+                        potential_stones.add(third_pos)                        
+                        
+                evaluation = evaluation_function(board, player_stones, opponent_stones)
+                
+                if evaluation < best_evaluation:
+                    best_evaluation = evaluation
+                    
+    return best_evaluation
+    
+    
 """
 Use MinMax strategy to calculate the best possible move
 Use a depth limit of 2
 """
-def smart_legal_move(board, color, player_stones, opponent_stones):
+def smart_legal_move(board, color, opponent, player_stones, opponent_stones):
     print(color +"'s turn")
     best_move = []
-    best_evaluation = -1*float("inf")    
+    best_evaluation = -1*float("inf")
     for row, col in player_stones:
         for move in possible_moves:
             new_pos = (row + move[0], col + move[1])
@@ -143,7 +171,7 @@ def smart_legal_move(board, color, player_stones, opponent_stones):
                         potential_stones.add(third_pos)                        
                         complete_move.append(third_pos)
                         
-                evaluation = evaluation_function(board, player_stones, opponent_stones)
+                evaluation = get_child_with_best_evaluation(board, opponent, opponent_stones, potential_stones)
                 
                 if evaluation > best_evaluation:
                     best_move = complete_move
@@ -191,26 +219,13 @@ board[3][3] = ["white", 10]
 black_stone_positions.add((0, 0))
 white_stone_positions.add((3, 3))
 
-# Random playing
-
-colors = ["white", "black"]
-positions = [white_stone_positions, black_stone_positions]
-
-index = 1
-other_index = 2 - index - 1
-
+# Game playing
 iterations = 0
 
-while (random_legal_move(board, colors[index], positions[index], positions[other_index])):
-    index += 1
-    index = index % 2
-    other_index = 2 - index - 1
+while (random_legal_move(board, "white", white_stone_positions, black_stone_positions)):
     
-    if smart_legal_move(board, colors[index], positions[index], positions[other_index]):
+    if smart_legal_move(board, "black", "white", black_stone_positions, white_stone_positions):
         print("")
-        index += 1
-        index = index % 2
-        other_index = 2 - index - 1
     else:
         break
     
