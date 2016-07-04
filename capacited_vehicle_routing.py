@@ -59,9 +59,8 @@ def check_validity(soln, demands):
 def get_valid_neighbor(init, min_vehicles, demands):
     valid = False
     final = []
-    iterations = 0
     
-    while not valid and iterations < 100:
+    while not valid:
         current = init
         move_from = random.randint(0, len(current) - 1)
         
@@ -74,12 +73,15 @@ def get_valid_neighbor(init, min_vehicles, demands):
         
         # Ensure we move to a new route
         while move_from == move_to:
-            move_to = random.randint(0, len(current) - 1)
+            move_to = random.randint(0, len(current))
             
         city_to_move = current[move_from][random.randint(0, len(current[move_from]) - 1)]
         current[move_from].remove(city_to_move)
                     
-        current[move_to].append(city_to_move)
+        if move_to == len(current):
+            current.append([city_to_move])
+        else:
+            current[move_to].append(city_to_move)
 
         if len(current[move_from]) == 0:
             current.remove([])
@@ -88,7 +90,6 @@ def get_valid_neighbor(init, min_vehicles, demands):
             valid = True
             final = current
         else:
-            iterations += 1
             final = init
     
     return final
