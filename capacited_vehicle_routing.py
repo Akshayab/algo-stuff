@@ -4,6 +4,7 @@ Created on Tue Jun 28 14:30:18 2016
 
 @author: akshaybudhkar
 Solution to Question 5 of Assignment 2
+Best so far, for :A-n33-k5.vrp is 1255, [[12, 22, 11, 19, 3, 29, 31], [13, 10, 7, 28, 25, 32], [18, 27, 20, 2, 24], [30, 17, 9, 1, 23], [21, 5], [15, 16, 6, 4, 8, 26], [14]]
 """
 import math
 import random
@@ -89,8 +90,6 @@ def get_valid_neighbor(init, min_vehicles, demands):
         if check_validity(current, demands):
             valid = True
             final = current
-        else:
-            final = init
     
     return final
     
@@ -121,7 +120,7 @@ def simulated_annealing(init, coordinates, demands, cities, min_vehicles):
     
     current_temp = 1000
     final_temp = 1
-    alpha = 0.85
+    alpha = 0.95
     max_iterations = 100
     
     while current_temp > final_temp:
@@ -155,7 +154,7 @@ def simulated_annealing(init, coordinates, demands, cities, min_vehicles):
     return (current, best, best_cost)
 
 
-file = open('A-n32-k5.vrp', 'r')
+file = open('A-n33-k5.vrp', 'r')
 
 dimension = 0
 capacity = 0
