@@ -22,18 +22,27 @@ def is_legal_move(board, new_position):
 
 """
 Calculate the goodness of a move
-moves of the format [[to_pos, num of stones], ...]
+Evaluation function: number of moves for player - number of moves for opponent
 """
-def evaluation_function(board, from_pos, moves, stones, color):
-    child_board = board[:]
-
-    for i in range(len(moves)):
-        make_move(child_board, from_pos, moves[i][0], moves[i][1], stones, color)
-        
+def evaluation_function(board, player_stones, opponent_stones):
+    score = 0
+    for row, col in player_stones:
+        for move in possible_moves:
+            new_pos = (row + move[0], col + move[1])
+            if is_legal_move(board, new_pos) and new_pos not in opponent_stones:
+                score += 1
+                
+    for row, col in opponent_stones:
+        for move in possible_moves:
+            new_pos = (row + move[0], col + move[1])
+            if is_legal_move(board, new_pos) and new_pos not in player_stones:
+                score -=1
+                
+    return score
         
 # Move pieces from one square to another
 def make_move(board, from_pos, to_pos, number, stones, color):
-    print("Tring to make a move " + str(number) + " pieces from " + str(from_pos) + \
+    print("Trying to make a move " + str(number) + " pieces from " + str(from_pos) + \
         " to " + str(to_pos))
     
     original_num = board[from_pos[0]][from_pos[1]][1]
@@ -110,11 +119,58 @@ Use a depth limit of 2
 """
 def smart_legal_move(board, color, player_stones, opponent_stones):
     print(color +"'s turn")
-    
+    best_move = []
+    best_evaluation = -1*float("inf")    
     for row, col in player_stones:
         for move in possible_moves:
-            #Do something
-
+            new_pos = (row + move[0], col + move[1])
+            complete_move = []
+            if is_legal_move(board, new_pos) and new_pos not in opponent_stones:
+                potential_stones = set(player_stones)
+                potential_stones.add(new_pos)
+                
+                complete_move.append((row, col))
+                complete_move.append(new_pos)
+                
+                second_pos = (new_pos[0] + move[0], new_pos[1] + move[1])
+                if second_pos not in opponent_stones and is_legal_move(board, second_pos):
+                    potential_stones.add(second_pos)
+                    
+                    complete_move.append(second_pos)                    
+                    third_pos = (second_pos[0] + move[0], second_pos[1] + move[1])
+                    
+                    if third_pos not in opponent_stones and is_legal_move(board, third_pos):
+                        potential_stones.add(third_pos)                        
+                        complete_move.append(third_pos)
+                        
+                evaluation = evaluation_function(board, player_stones, opponent_stones)
+                
+                if evaluation > best_evaluation:
+                    best_move = complete_move
+                    best_evaluation = evaluation
+                    
+    if len(best_move) == 0:
+        print("No move possible, " + color + " lost")
+        return False
+    else:
+        num = board[best_move[0][0]][best_move[0][1]][1]
+        if len(best_move) == 2:
+            if make_move(board, best_move[0], best_move[1], num, player_stones, color):
+                return True
+        elif len(best_move) == 3:
+            if make_move(board, best_move[0], best_move[1], 1, player_stones, color) or \
+            make_move(board, best_move[0], best_move[2], num - 1, player_stones, color):
+                return True
+        elif len(best_move) == 4:
+            if make_move(board, best_move[0], best_move[1], 1, player_stones, color) or \
+            make_move(board, best_move[0], best_move[2], 2, player_stones, color) or \
+            make_move(board, best_move[0], best_move[3], num - 3, player_stones, color):
+                return True
+                
+    print("No move possible, " + color + " lost")
+    return False
+    
+    
 num_of_rows = 4
 num_of_cols = 4
 
@@ -140,14 +196,26 @@ white_stone_positions.add((3, 3))
 colors = ["white", "black"]
 positions = [white_stone_positions, black_stone_positions]
 
-index = 0
+index = 1
 other_index = 2 - index - 1
+
+iterations = 0
 
 while (random_legal_move(board, colors[index], positions[index], positions[other_index])):
     index += 1
     index = index % 2
     other_index = 2 - index - 1
-
+    
+    if smart_legal_move(board, colors[index], positions[index], positions[other_index]):
+        print("")
+        index += 1
+        index = index % 2
+        other_index = 2 - index - 1
+    else:
+        break
+    
+    iterations += 1
+    
     print("")
 
     
@@ -156,3 +224,4 @@ print(black_stone_positions)
 
 print("")
 pretty_print(board)
+print("It took " + str(iterations) + " iterations")
