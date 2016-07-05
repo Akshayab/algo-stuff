@@ -120,7 +120,7 @@ def random_legal_move(board, color, player_stones, opponent_stones):
 Evaluates function for the board with the potential moves of the player.
 Returns the move with the least value (cause it is a Min)
 """
-def get_child_with_best_evaluation(board, player_stones, opponent_stones):
+def get_child_with_best_evaluation(board, player_stones, opponent_stones, current_best):
     best_evaluation = float("inf")
     
     for row, col in opponent_stones:
@@ -142,6 +142,10 @@ def get_child_with_best_evaluation(board, player_stones, opponent_stones):
                         
                 evaluation = evaluation_function(board, player_stones, potential_stones)
                 
+                # Alpha prunning
+                if evaluation < current_best:
+                    return evaluation
+                
                 if evaluation < best_evaluation:
                     best_evaluation = evaluation
                     
@@ -160,6 +164,7 @@ def smart_legal_move(board, color, opponent, player_stones, opponent_stones):
         for move in possible_moves:
             new_pos = (row + move[0], col + move[1])
             complete_move = []
+            
             if is_legal_move(board, new_pos) and new_pos not in opponent_stones:
                 potential_stones = set(player_stones)
                 potential_stones.add(new_pos)
@@ -178,7 +183,7 @@ def smart_legal_move(board, color, opponent, player_stones, opponent_stones):
                         potential_stones.add(third_pos)                        
                         complete_move.append(third_pos)
                         
-                evaluation = get_child_with_best_evaluation(board, potential_stones, opponent_stones)
+                evaluation = get_child_with_best_evaluation(board, potential_stones, opponent_stones, best_evaluation)
                 
                 if evaluation >= best_evaluation:
                     best_move = complete_move
