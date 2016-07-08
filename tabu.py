@@ -44,7 +44,7 @@ def calculate_cost(instance, flow_arr, distance_arr):
 Gives the most optimal neighbor in a neighborhood
 Takes into account tabued options and aspirations
 """
-def get_most_optimal_neighbor(instance, flow_arr, distance_arr, tabu_matrix, tabu_size, best = []):
+def get_most_optimal_neighbor(instance, flow_arr, distance_arr, tabu_matrix, tabu_size, best):
     best_cost = float("inf")
     best_instance = None
     
@@ -54,7 +54,7 @@ def get_most_optimal_neighbor(instance, flow_arr, distance_arr, tabu_matrix, tab
         # change to range(limit) to limit the neighbourhood
         for j in range(len(instance)):
             # Don't switch with itself
-            if i != j:
+            if j > i:
                 new_instance = instance[:]
                 new_instance[i], new_instance[j] = new_instance[j], new_instance[i]
                 new_cost = calculate_cost(new_instance, flow_arr, distance_arr)

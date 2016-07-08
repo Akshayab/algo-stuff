@@ -23,12 +23,15 @@ def get_random_solution(lst, min_split, no_of_splits):
     yield list(itr)
 
 
-def calculate_cost(solution, depot, distance):
-    cost = 0    
+def calculate_cost(solution, depot, distance, service):
+    cost = 0
+    # Service times in each city are added
+    for time in service:
+        cost += time
     for i in range(len(solution)):
         for j in range(len(solution[i])):
             current = solution[i][j]
-            # Cost from the depot
+            # Cost from/to the depot
             if j == 0 or j == (len(solution[i]) - 1):
                 cost += depot[current]
             
@@ -42,16 +45,16 @@ def calculate_cost(solution, depot, distance):
 """
 Neighborhood Definition Rules:
 - You can move a city from one route to another
--- When a city is added to a new route, it is always added at the end
--- Do not move the city if it is the only one serviced by the vehicle
+- When a city is added to a new route, it is always added at the end
+- Do not move the city if it is the only one serviced by the vehicle
 - You cannot switch cities in the same route
--- It doesn't provide as much diversification
+- It doesn't provide as much diversification
 """
 
 def get_random_neighbor(solution): 
     move_from = random.randint(0, len(solution) - 1)
     
-    # Ensure we move from a city with more than one city
+    # Ensure we only move from a route with more than one city
     while len(solution[move_from]) <= 1:
         move_from = random.randint(0, len(solution) - 1)
         
@@ -68,9 +71,9 @@ def get_random_neighbor(solution):
     
     return solution
     
-def simulated_annealing(solution, depot, distance):
+def simulated_annealing(solution, depot, distance, service):
     current = solution
-    current_cost = calculate_cost(current, depot, distance)
+    current_cost = calculate_cost(current, depot, distance, service)
     best = solution
     best_cost = current_cost
     
@@ -86,7 +89,7 @@ def simulated_annealing(solution, depot, distance):
         
         while iterations < max_iterations:
             nbr = get_random_neighbor(current)
-            nbr_cost = calculate_cost(nbr, depot, distance)
+            nbr_cost = calculate_cost(nbr, depot, distance, service)
             change = nbr_cost - current_cost
             
             # If we improve, make that change
@@ -110,9 +113,9 @@ def simulated_annealing(solution, depot, distance):
         else:
             flop_iterations += 1
             
-        print(current_cost)
+        print(best_cost)
     
-    return (current, best, best_cost)
+    return (best, best_cost)
         
 # Note: vehicles and cities are zero indexed
 vehicles = 3
@@ -120,28 +123,30 @@ cities = 9
 
 Depot = [random.randint(5, 50) for i in range(cities)]
 D = [[0 for i in range(cities)] for j in range(cities)]
+service_times = [random.randint(5, 50) for i in range(cities)]
 
-# Values of the distances in the cities much be symmetric
+# Values of the distances in the cities must be symmetric
 for i in range(len(D)):
     for j in range(len(D[0])):
         if D[i][j] == 0:
             value = random.randint(5, 50)
             D[i][j] = value
             D[j][i] = value
+        if i == j:
+            D[i][j] = 0
 
 """
 Solution Definition:
-Consider a solution to be a 2D Matrix with row n representing the cities
-serviced by vehicle n. Every row will have the cities processed in order
+The solution is defined as a list of lists. The number of sub-lists is equal to the number of vehicles.
+The elements in each sub-list represent the cities being serviced by that vehicle. The order of elements in the list
+defines the order in which the cities are serviced by that vehicle. Since this is a permutation problem, an element
+will only occur once i.e. in only one of the sub-lists.
 """
 init_soln = list(get_random_solution(range(cities), 1, vehicles))
 
-print(init_soln)
-print(calculate_cost(init_soln, Depot, D))
+print("Initial solution: " + str(init_soln))
+print("Cost of initial solution: " + str(calculate_cost(init_soln, Depot, D, service_times)))
 
 nbr = get_random_neighbor(init_soln)
 
-print(nbr)
-print(calculate_cost(nbr, Depot, D))
-
-print(simulated_annealing(init_soln, Depot, D))
+print(simulated_annealing(init_soln, Depot, D, service_times))

@@ -121,7 +121,7 @@ def find_a_star_path(graph, start, end_one, end_two):
             cost + 1, node, path + "->" + direction))
 
 
-    return "There is no way from start to end"        
+    return "There is no way from start to end"
         
 num_of_rows = 25
 num_of_cols = 25
@@ -150,11 +150,15 @@ end_two = add_point(matrix, 4)
 
 graph = maze_to_graph(matrix)
 
-print((start, end_one, end_two))
+print("Start: " + str(start))
+print("End 1: " + str(end_one))
+print("End 2: " + str(end_two))
+
+print("BFS Path: ")
 print(find_bfs_path(graph, start, end_one, end_two))
 
-print((start, end_one, end_two))
+print("DFS Path: ")
 print(find_dfs_path(graph, start, end_one, end_two))
 
-print((start, end_one, end_two))
+print("A* Path: ")
 print(find_a_star_path(graph, start, end_one, end_two))

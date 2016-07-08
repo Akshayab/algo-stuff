@@ -42,7 +42,7 @@ def evaluation_function(board, player_stones, opponent_stones):
         
 # Move pieces from one square to another
 def make_move(board, from_pos, to_pos, number, stones, color):
-    print("Trying to make a move " + str(number) + " pieces from " + str(from_pos) + \
+    print("Trying to move " + str(number) + " piece(s) from " + str(from_pos) + \
         " to " + str(to_pos))
     
     original_num = board[from_pos[0]][from_pos[1]][1]
@@ -71,14 +71,14 @@ def make_move(board, from_pos, to_pos, number, stones, color):
             if from_pos in stones:
                 stones.remove(from_pos)
             
-        print(color + " moves " + str(number) + " pieces from " + str(from_pos) + \
+        print(color + " moves " + str(number) + " piece(s) from " + str(from_pos) + \
         " to " + str(to_pos))
         
         # Did any stones move?
         return number > 0
     return False
         
-def random_legal_move(board, color, player_stones, opponent_stones):    
+def random_legal_move(board, color, player_stones, opponent_stones):
     print(color + "'s turn")
     
     random_stones = random.sample(player_stones, len(player_stones))
@@ -218,8 +218,8 @@ black_stone_positions = set()
 white_stone_positions = set()
 
 """
-board is a 2D Array corresponding to the grids on the playing board
-Every grid will consist of an array with the format:
+board is a 2D Array corresponding to the grid locations on the playing board
+Every grid location will consist of an array with the format:
 ["color of stone", # of stones]
 """
 board = [[[None, 0] for i in range(num_of_cols)] for j in range(num_of_rows)]
@@ -246,8 +246,8 @@ while (random_legal_move(board, "white", white_stone_positions, black_stone_posi
     print("")
 
     
-print(white_stone_positions)
-print(black_stone_positions)
+print("White stone positions: " + str(white_stone_positions))
+print("Black stone positions: " + str(black_stone_positions))
 
 print("")
 pretty_print(board)

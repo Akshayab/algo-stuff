@@ -3,7 +3,7 @@
 Created on Tue Jun 28 14:30:18 2016
 
 @author: akshaybudhkar
-Solution to Question 5 of Assignment 2
+Solution to Question 5 of Assignment 2 - optimal is 661
 Best so far, for :A-n33-k5.vrp is 1255, [[12, 22, 11, 19, 3, 29, 31], [13, 10, 7, 28, 25, 32], [18, 27, 20, 2, 24], [30, 17, 9, 1, 23], [21, 5], [15, 16, 6, 4, 8, 26], [14]]
 """
 import math
@@ -65,7 +65,7 @@ def get_valid_neighbor(init, min_vehicles, demands):
         current = init
         move_from = random.randint(0, len(current) - 1)
         
-        # Ensure that we have atleast one city left
+        # Ensure that we have at least one city left
         if current[move_from] == 1 and len(current) == min_vehicles:
             while len(current[move_from]) <= 1:
                 move_from = random.randint(0, len(current) - 1)
@@ -86,7 +86,7 @@ def get_valid_neighbor(init, min_vehicles, demands):
 
         if len(current[move_from]) == 0:
             current.remove([])
-        
+
         if check_validity(current, demands):
             valid = True
             final = current
@@ -120,7 +120,7 @@ def simulated_annealing(init, coordinates, demands, cities, min_vehicles):
     
     current_temp = 1000
     final_temp = 1
-    alpha = 0.95
+    alpha = 0.85
     max_iterations = 100
     
     while current_temp > final_temp:
@@ -142,47 +142,49 @@ def simulated_annealing(init, coordinates, demands, cities, min_vehicles):
                     current_cost = nbr_cost
                     
             iterations += 1
-        
+
         current_temp = current_temp*alpha
         
         if current_cost < best_cost:
             best = current
             best_cost = current_cost
             
-        print(current_cost)
+        print(best_cost)
     
-    return (current, best, best_cost)
+    return (best, best_cost)
 
 
 file = open('A-n33-k5.vrp', 'r')
 
-dimension = 0
-capacity = 0
-min_vehicles = 0
+dimension = 0       # number of nodes, including depot
+capacity = 0        # capacity of each vehicle
+min_vehicles = 0    # min no of vehicles/routes
 
 reading_node = False
 reading_demand = False
 
-# Every index is going to be a 2D coordinate for node# (i + 1)
+# Every index is going to be a 2D coordinate for (i + 1)th node
+# Eg: The first (0th) element contains coords for node 1
 coordinates = []
 
-# Every index depicts capacity for node# (i + 1)
+# Every index depicts the demand for (i + 1)th node
+# Eg: The first (0th) element contains coords for node 1
 demands = []
 
 for line in file: 
     data = line.split()
     type = data[0]
-    
-    if type == "NAME":
+
+    if type == "NAME":                  # name of file for identification
         name = data[2]
         min_vehicles = int(name.split('-')[-1][-1])
-    elif type == "DIMENSION":
+    elif type == "DIMENSION":           # number of nodes, including depot
         dimension = int(data[2])
-    elif type == "CAPACITY":
+    elif type == "CAPACITY":            # capacity of each vehicle
         capacity = int(data[2])
-    elif type == "DEMAND_SECTION":
+    elif type == "DEMAND_SECTION":      # demand of all nodes
         reading_node = False
-    elif type == "DEPOT_SECTION":
+    elif type == "DEPOT_SECTION":       # list of all depot nodes
         reading_demand = False
         
     if reading_node:
@@ -191,9 +193,9 @@ for line in file:
     if reading_demand:
         demands.append(int(data[1]))
     
-    if type == "NODE_COORD_SECTION":
+    if type == "NODE_COORD_SECTION":    # coordinates of each node
         reading_node = True
-    elif type == "DEMAND_SECTION":
+    elif type == "DEMAND_SECTION":      # demand of all nodes
         reading_demand = True
         
 depot = coordinates[0]
@@ -201,5 +203,6 @@ cities = [i + 1 for i in range(len(coordinates) - 1)] # Do not include the depot
 
 init_soln = list(get_valid_random_solution(cities, 1, min_vehicles, demands))
 
-print(init_soln)
+print("Initial solution: " + str(init_soln))
+print("Cost of initial solution: " + str(calculate_cost(init_soln, coordinates)))
 print(simulated_annealing(init_soln, coordinates, demands, cities, min_vehicles))
