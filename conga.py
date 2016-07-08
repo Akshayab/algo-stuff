@@ -39,6 +39,9 @@ def evaluation_function(board, player_stones, opponent_stones):
                 score -=1
                 
     return score
+    
+def evaluation_function_two(board, player_stones, opponent_stones):
+    return len(player_stones) - len(opponent_stones)
         
 # Move pieces from one square to another
 def make_move(board, from_pos, to_pos, number, stones, color):
@@ -140,7 +143,7 @@ def get_child_with_best_evaluation(board, player_stones, opponent_stones, curren
                     if third_pos not in player_stones and is_legal_move(board, third_pos):
                         potential_stones.add(third_pos)                        
                         
-                evaluation = evaluation_function(board, player_stones, potential_stones)
+                evaluation = evaluation_function_two(board, player_stones, potential_stones)
                 
                 # Alpha prunning
                 if evaluation < current_best:
