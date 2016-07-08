@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9894224a-6b8e-4883-96e7-7bb7f1ac445e" name="Default" comment="Small changes everywhere">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/capacited_vehicle_routing.py" afterPath="$PROJECT_DIR$/capacitated_vehicle_routing.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/conga.py" afterPath="$PROJECT_DIR$/conga.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/maze.py" afterPath="$PROJECT_DIR$/maze.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tabu.py" afterPath="$PROJECT_DIR$/tabu.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vehicle_routing.py" afterPath="$PROJECT_DIR$/vehicle_routing.py" />
     </list>
     <ignored path="algo-stuff.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,31 +24,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="capacitated_vehicle_routing.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/capacitated_vehicle_routing.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2115">
-              <caret line="143" column="27" selection-start-line="143" selection-start-column="27" selection-end-line="143" selection-end-column="27" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="conga.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/conga.py">
+      <file leaf-file-name="maze.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/maze.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="300">
-              <caret line="20" column="60" selection-start-line="20" selection-start-column="60" selection-end-line="20" selection-end-column="60" />
+              <caret line="22" column="48" selection-start-line="22" selection-start-column="48" selection-end-line="22" selection-end-column="48" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="vehicle_routing.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/vehicle_routing.py">
+      <file leaf-file-name="conga.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/conga.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-861">
-              <caret line="53" column="4" selection-start-line="53" selection-start-column="4" selection-end-line="53" selection-end-column="4" />
+            <state relative-caret-position="-2856">
+              <caret line="22" column="3" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
               <folding />
             </state>
           </provider>
@@ -66,11 +53,11 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/tabu.py" />
-        <option value="$PROJECT_DIR$/maze.py" />
-        <option value="$PROJECT_DIR$/vehicle_routing.py" />
         <option value="$PROJECT_DIR$/capacited_vehicle_routing.py" />
-        <option value="$PROJECT_DIR$/capacitated_vehicle_routing.py" />
         <option value="$PROJECT_DIR$/conga.py" />
+        <option value="$PROJECT_DIR$/capacitated_vehicle_routing.py" />
+        <option value="$PROJECT_DIR$/vehicle_routing.py" />
+        <option value="$PROJECT_DIR$/maze.py" />
       </list>
     </option>
   </component>
@@ -133,7 +120,7 @@
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="FullScreen" value="true" />
   </component>
-  <component name="RunManager" selected="Python.conga">
+  <component name="RunManager" selected="Python.maze">
     <configuration default="false" name="maze" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -344,10 +331,10 @@
     </list>
     <recent_temporary>
       <list size="4">
-        <item index="0" class="java.lang.String" itemvalue="Python.conga" />
-        <item index="1" class="java.lang.String" itemvalue="Python.capacited_vehicle_routing" />
-        <item index="2" class="java.lang.String" itemvalue="Python.vehicle_routing" />
-        <item index="3" class="java.lang.String" itemvalue="Python.maze" />
+        <item index="0" class="java.lang.String" itemvalue="Python.maze" />
+        <item index="1" class="java.lang.String" itemvalue="Python.vehicle_routing" />
+        <item index="2" class="java.lang.String" itemvalue="Python.conga" />
+        <item index="3" class="java.lang.String" itemvalue="Python.capacited_vehicle_routing" />
       </list>
     </recent_temporary>
   </component>
@@ -501,44 +488,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/maze.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="645">
-          <caret line="45" column="4" selection-start-line="45" selection-start-column="4" selection-end-line="45" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tabu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="585">
+        <state relative-caret-position="-636">
           <caret line="68" column="67" selection-start-line="68" selection-start-column="67" selection-end-line="68" selection-end-column="67" />
-          <folding>
-            <element signature="e#223#233#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/vehicle_routing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-861">
-          <caret line="53" column="4" selection-start-line="53" selection-start-column="4" selection-end-line="53" selection-end-column="4" />
+        <state relative-caret-position="315">
+          <caret line="90" column="46" selection-start-line="90" selection-start-column="46" selection-end-line="90" selection-end-column="46" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/capacitated_vehicle_routing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2115">
-          <caret line="143" column="27" selection-start-line="143" selection-start-column="27" selection-end-line="143" selection-end-column="27" />
+        <state relative-caret-position="219">
+          <caret line="182" column="66" selection-start-line="182" selection-start-column="66" selection-end-line="182" selection-end-column="66" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/conga.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2856">
+          <caret line="22" column="3" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/maze.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
-          <caret line="20" column="60" selection-start-line="20" selection-start-column="60" selection-end-line="20" selection-end-column="60" />
+          <caret line="22" column="48" selection-start-line="22" selection-start-column="48" selection-end-line="22" selection-end-column="48" />
           <folding />
         </state>
       </provider>

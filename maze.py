@@ -18,7 +18,7 @@ def add_point(matrix, num):
     while True:
         random_row = random.randint(0, len(matrix) - 1)
         random_col = random.randint(0, len(matrix[0]) - 1)
-        
+
         if matrix[random_row][random_col] == 0:
             matrix[random_row][random_col] = num
             return (random_row, random_col)
@@ -47,12 +47,19 @@ def find_bfs_path(graph, start, end_one, end_two):
     # Make a queue which stores the node and the path to the node
     queue = deque([(start, "")])
     visited = set() # All visited nodes
-    
+
     while queue:
         current, path = queue.popleft()
-        
+
         if current == end_one or current == end_two:
-            return path[2:]
+            moves = 0
+            for i in path:
+                if i == 'N' or i == 'S' or i == 'E' or i == 'W':
+                    moves += 1
+            if current == end_one:
+                return len(visited), moves, "End 1", path[2:]
+            else:
+                return len(visited), moves, "End 2", path[2:]
         
         if current in visited:
             continue
@@ -60,19 +67,26 @@ def find_bfs_path(graph, start, end_one, end_two):
 
         for direction, node in graph[current]:
             queue.append((node, path + "->" + direction))
-            
+
     return "There is no way from start to end"
     
 def find_dfs_path(graph, start, end_one, end_two):
     # Make a stack which stores the node and the path to the node
     stack = deque([(start, "")])
     visited = set() # All visited nodes
-    
+
     while stack:
         current, path = stack.pop()
-        
+
         if current == end_one or current == end_two:
-            return path[2:]
+            moves = 0
+            for i in path:
+                if i == 'N' or i == 'S' or i == 'E' or i == 'W':
+                    moves += 1
+            if current == end_one:
+                return len(visited), moves, "End 1", path[2:]
+            else:
+                return len(visited), moves, "End 2", path[2:]
         
         if current in visited:
             continue
@@ -105,12 +119,19 @@ def find_a_star_path(graph, start, end_one, end_two):
     heappush(heap, (calculate_heuristic(start, end_one, end_two), 0, start, ""))
     
     visited = set() # All visited nodes
-    
+
     while heap:
         heuristic, cost, current, path = heappop(heap)
-        
+
         if current == end_one or current == end_two:
-            return path[2:]
+            moves = 0
+            for i in path:
+                if i == 'N' or i == 'S' or i == 'E' or i == 'W':
+                    moves += 1
+            if current == end_one:
+                return len(visited), moves, "End 1", path[2:]
+            else:
+                return len(visited), moves, "End 2", path[2:]
 
         if current in visited:
             continue
