@@ -98,7 +98,7 @@ def crossover(lst):
         rand = random.random()
         
         # Do a crossover
-        if rand < 0.6:
+        if rand < 0.90:
             # Whole arithmetic crossover used
             alpha = 0.9
             
